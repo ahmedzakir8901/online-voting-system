@@ -48,29 +48,24 @@
             color: var(--yellow);
         }
 
-        .login-btn,
-        .btn {
-            font-weight: 800;
-            text-decoration: none;
-            transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease;
-        }
-
-        .login-btn {
+        .signup-btn {
             padding: 0.7rem 1.2rem;
             border-radius: 999px;
             background: var(--yellow);
             color: #111827;
+            font-weight: 800;
+            text-decoration: none;
+            transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
         }
 
-        .login-btn:hover,
-        .login-btn:focus-visible {
+        .signup-btn:hover,
+        .signup-btn:focus-visible {
             background: #fde047;
             box-shadow: 0 10px 24px rgba(250, 204, 21, 0.28);
             transform: translateY(-2px);
         }
 
-        .login-btn:focus-visible,
-        .btn:focus-visible {
+        .signup-btn:focus-visible {
             outline: 3px solid white;
             outline-offset: 4px;
         }
@@ -84,7 +79,7 @@
         }
 
         .login-container {
-            width: min(100%, 420px);
+            width: min(100%, 450px);
             animation: enter 600ms ease-out both;
         }
 
@@ -118,34 +113,29 @@
             color: var(--sky);
             font-size: 0.95rem;
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
         }
 
-        /* Alert notifications */
-        .alert {
+        .alert-danger {
             padding: 0.75rem 1rem;
             border-radius: 0.6rem;
             font-size: 0.88rem;
             margin-bottom: 1.25rem;
-            text-align: left;
-        }
-
-        .alert-danger {
             background: rgba(239, 68, 68, 0.2);
             border: 1px solid rgba(239, 68, 68, 0.4);
             color: #fca5a5;
+            text-align: left;
         }
 
         .alert-success {
+            padding: 0.75rem 1rem;
+            border-radius: 0.6rem;
+            font-size: 0.88rem;
+            margin-bottom: 1.25rem;
             background: rgba(34, 197, 94, 0.2);
             border: 1px solid rgba(34, 197, 94, 0.4);
             color: #86efac;
-        }
-
-        .alert-info {
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            color: #93c5fd;
+            text-align: left;
         }
 
         .form-group {
@@ -244,31 +234,28 @@
     <div class="logo">
         <a th:href="@{/}" style="color: inherit; text-decoration: none;">Vote<span>Online</span></a>
     </div>
-    <a th:href="@{/register}" class="login-btn">Register</a>
+    <a th:href="@{/signup}" class="signup-btn">Signup</a>
 </nav>
 
 <main>
     <div class="login-container">
         <div class="form-card">
             <h2>Welcome <span>Back</span></h2>
-            <p>Log in to access your voting portal</p>
+            <p>Enter your CNIC and password to log in</p>
 
-            <!-- Notification Messages -->
-            <div th:if="${param.error}" class="alert alert-danger">
-                Invalid username or password. Please try again.
+            <div th:if="${param.error}" class="alert-danger">
+                Invalid CNIC or password. Please try again.
             </div>
-            <div th:if="${param.registered}" class="alert alert-success">
-                Account created successfully! Please log in.
-            </div>
-            <div th:if="${param.logout}" class="alert alert-info">
-                You have been logged out safely.
+            <div th:if="${error}" class="alert-danger" th:text="${error}"></div>
+
+            <div th:if="${param.logout}" class="alert-success">
+                You have been logged out successfully.
             </div>
 
-            <!-- Login Form -->
             <form th:action="@{/login}" method="post">
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required>
+                    <label for="cnic">CNIC</label>
+                    <input type="text" id="cnic" name="cnic" class="form-control" placeholder="12345-6789012-3" pattern="^[0-9]{5}-[0-9]{7}-[0-9]{1}$" title="Format: 12345-6789012-3" required>
                 </div>
 
                 <div class="form-group">
@@ -276,12 +263,12 @@
                     <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
                 </div>
 
-                <button type="submit" class="btn-submit">Sign In</button>
+                <button type="submit" class="btn-submit">Login Now</button>
             </form>
 
             <div class="form-footer">
                 Don't have an account?
-                <a th:href="@{/register}">Register here</a>
+                <a th:href="@{/signup}">Signup here</a>
             </div>
         </div>
     </div>

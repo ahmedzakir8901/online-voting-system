@@ -29,12 +29,19 @@
         .logo {
             font-size: 24px;
             font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .logo span {
             color: #facc15;
         }
 
+        /* Top Nav Login Button */
         .login-btn {
             background: #facc15;
             color: #111827;
@@ -42,6 +49,15 @@
             padding: 10px 22px;
             border-radius: 6px;
             font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .login-btn:hover {
+            background: #eab308;
+            color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(250, 204, 21, 0.4);
         }
 
         main {
@@ -82,17 +98,39 @@
             border-radius: 6px;
             text-decoration: none;
             font-weight: bold;
+            transition: all 0.3s ease;
         }
+
+        /* Primary Button (Register to Vote) */
         .btn-primary {
             background: #facc15;
             color: #111827;
+            box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
         }
 
+        .btn-primary:hover {
+            background: #eab308;
+            color: #000000;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(250, 204, 21, 0.5);
+        }
+
+        /* Secondary Button (Cast Your Vote) */
         .btn-secondary {
             border: 1px solid #bfdbfe;
             color: white;
+            background: transparent;
         }
 
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #ffffff;
+            color: #facc15;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Feature Cards Grid */
         .features {
             margin-top: 50px;
             display: grid;
@@ -105,11 +143,25 @@
             padding: 22px;
             border-radius: 10px;
             text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-5px);
+            border-color: #facc15;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
         .feature-card h3 {
             margin-bottom: 10px;
             color: #facc15;
+            transition: color 0.3s ease;
+        }
+
+        .feature-card:hover h3 {
+            color: #ffffff;
         }
 
         @media (max-width: 700px) {
@@ -126,7 +178,7 @@
 <body>
 <nav>
     <div class="logo">Vote<span>Online</span></div>
-    <a href="/login" class="login-btn">Login</a>
+    <a th:href="@{/login}" class="login-btn">Login</a>
 </nav>
 
 <main>
@@ -139,8 +191,9 @@
         </p>
 
         <div class="hero-buttons">
-            <a href="/register" class="btn btn-primary">Register to Vote</a>
-            <a href="/login" class="btn btn-secondary">Cast Your Vote</a>
+            <!-- FIXED: Changed /register to th:href="@{/signup}" -->
+            <a th:href="@{/signup}" class="btn btn-primary">Register to Vote</a>
+            <a th:href="@{/login}" class="btn btn-secondary">Cast Your Vote</a>
         </div>
 
         <div class="features">

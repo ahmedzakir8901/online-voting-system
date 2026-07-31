@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Online Voting System</title>
+    <title>Signup - Online Voting System</title>
 
     <style>
         :root {
@@ -83,8 +83,8 @@
             padding: 40px 20px 60px;
         }
 
-        .register-container {
-            width: min(100%, 450px);
+        .signup-container {
+            width: min(100%, 560px);
             animation: enter 600ms ease-out both;
         }
 
@@ -121,6 +121,23 @@
             margin-bottom: 1.75rem;
         }
 
+        .alert-danger {
+            padding: 0.75rem 1rem;
+            border-radius: 0.6rem;
+            font-size: 0.88rem;
+            margin-bottom: 1.25rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            text-align: left;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
         .form-group {
             margin-bottom: 1.25rem;
             text-align: left;
@@ -155,7 +172,7 @@
             color: rgba(219, 234, 254, 0.4);
         }
 
-        select.form-controlOption {
+        select.form-control option {
             background-color: var(--navy);
             color: white;
         }
@@ -206,6 +223,7 @@
             nav { padding: 20px; }
             main { padding: 24px 16px 40px; }
             .form-card { padding: 1.75rem 1.25rem; }
+            .form-row { grid-template-columns: 1fr; gap: 0; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -226,31 +244,71 @@
 </nav>
 
 <main>
-    <div class="register-container">
+    <div class="signup-container">
         <div class="form-card">
-            <h2>Create <span>Account</span></h2>
-            <p>Fill in your details to register as a voter</p>
+            <h2>User <span>Signup</span></h2>
+            <p>Fill in your details to create your voting account</p>
 
-            <form th:action="@{/register}" method="post">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Choose a username" required>
+            <!-- Error Banner -->
+            <div th:if="${error}" class="alert-danger" th:text="${error}"></div>
+
+            <form th:action="@{/signup}" method="post">
+
+                <!-- First Name and Last Name Row -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Enter first name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Enter last name" required>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
+                <!-- CNIC and Phone Number Row -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cnic">CNIC Number</label>
+                        <input type="text" id="cnic" name="cnic" class="form-control" placeholder="12345-6789012-3" pattern="^[0-9]{5}-[0-9]{7}-[0-9]{1}$" title="Format: 12345-6789012-3" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" class="form-control" placeholder="0300-1234567" required>
+                    </div>
                 </div>
 
+                <!-- Email Address -->
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter email address" required>
+                </div>
+
+                <!-- Password and Confirm Password Row -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm password" required>
+                    </div>
+                </div>
+
+                <!-- Account Role -->
                 <div class="form-group">
                     <label for="role">Account Role</label>
                     <select id="role" name="role" class="form-control">
-                        <option value="ROLE_VOTER" class="form-controlOption">Voter</option>
-                        <option value="ROLE_ADMIN" class="form-controlOption">Admin</option>
+                        <option value="ROLE_VOTER">Voter</option>
+                        <option value="ROLE_ADMIN">Admin</option>
                     </select>
                 </div>
 
-                <button type="submit" class="btn-submit">Register Now</button>
+                <button type="submit" class="btn-submit">Signup Now</button>
             </form>
 
             <div class="form-footer">
