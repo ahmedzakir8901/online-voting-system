@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Auto-redirect to home page after 5 seconds (Optional) -->
+    <meta http-equiv="refresh" content="5;url=/" />
+    <title>Logged Out - Online Voting System</title>
+
+    <style>
+        :root {
+            --navy: #0b1534;
+            --yellow: #facc15;
+            --sky: #dbeafe;
+            --emerald: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background:
+                    radial-gradient(circle at 12% 15%, rgba(96, 165, 250, 0.42), transparent 28rem),
+                    radial-gradient(circle at 90% 82%, rgba(250, 204, 21, 0.17), transparent 26rem),
+                    linear-gradient(135deg, var(--navy), #1d4ed8);
+            color: white;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: min(1180px, 100%);
+            margin: 0 auto;
+            padding: 24px 32px;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .logo span {
+            color: var(--yellow);
+        }
+
+        main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 91px);
+            padding: 40px 20px 60px;
+        }
+
+        .logout-container {
+            width: min(100%, 480px);
+            animation: enter 600ms ease-out both;
+        }
+
+        @keyframes enter {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            padding: 2.5rem 2rem;
+            border: 1px solid rgba(219, 234, 254, 0.18);
+            border-radius: 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        .icon-box {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1.25rem;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-box svg {
+            width: 36px;
+            height: 36px;
+            stroke: var(--emerald);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+        }
+
+        .card h2 span {
+            color: var(--yellow);
+        }
+
+        .card p {
+            color: var(--sky);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-direction: column;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 0.85rem;
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-decoration: none;
+            transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--yellow);
+            color: #111827;
+            box-shadow: 0 12px 25px rgba(250, 204, 21, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: #fde047;
+            transform: translateY(-2px);
+            box-shadow: 0 18px 32px rgba(250, 204, 21, 0.36);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(219, 234, 254, 0.3);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .redirect-notice {
+            margin-top: 1.5rem;
+            font-size: 0.82rem;
+            color: rgba(219, 234, 254, 0.6);
+        }
+
+        @media (max-width: 700px) {
+            nav { padding: 20px; }
+            main { padding: 24px 16px 40px; }
+            .card { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">
+        <a th:href="@{/}" style="color: inherit; text-decoration: none;">Vote<span>Online</span></a>
+    </div>
+</nav>
+
+<main>
+    <div class="logout-container">
+        <div class="card">
+            <!-- Success Shield Icon -->
+            <div class="icon-box">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+            </div>
+
+            <h2>Logged Out <span>Successfully</span></h2>
+            <p>Thank you for using the Online Voting System. Your session has been safely closed.</p>
+
+            <div class="action-buttons">
+                <a th:href="@{/login}" class="btn btn-primary">Login Again</a>
+                <a th:href="@{/}" class="btn btn-secondary">Return to Home</a>
+            </div>
+
+            <div class="redirect-notice">
+                Redirecting to home page automatically in 5 seconds...
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
