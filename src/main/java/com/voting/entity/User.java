@@ -34,10 +34,8 @@ public class User {
     private String lastName;
 
     @Column(
-            name = "email",
-            nullable = false,
             unique = true,
-            length = 255
+            nullable = false
     )
     private String email;
 
@@ -49,10 +47,8 @@ public class User {
     private String password;
 
     @Column(
-            name = "cnic",
-            nullable = false,
             unique = true,
-            length = 15
+            nullable = false
     )
     private String cnic;
 
