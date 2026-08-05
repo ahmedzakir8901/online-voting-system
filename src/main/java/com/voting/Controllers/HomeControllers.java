@@ -17,9 +17,9 @@ public class HomeControllers {
 
     // Simple Dummy User Model for In-Memory Testing without DB
     public static class SimpleUser {
-        private String firstName;
-        private String lastName;
-        private String cnic;
+        final String firstName;
+        final String lastName;
+        final String cnic;
 
         public SimpleUser(String firstName, String lastName, String cnic) {
             this.firstName = firstName;
@@ -35,7 +35,7 @@ public class HomeControllers {
     // 0. Home Page Landing Route (Required for redirect:/)
     @GetMapping("/")
     public String home() {
-        return "index"; // loads index.html
+        return "home"; // loads home.html
     }
 
     // 1. Dashboard Page
