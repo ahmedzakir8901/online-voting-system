@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Dashboard - Online Voting System</title>
+
+    <style>
+        :root {
+            --navy: #0b1534;
+            --yellow: #facc15;
+            --sky: #dbeafe;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background:
+                    radial-gradient(circle at 12% 15%, rgba(96, 165, 250, 0.42), transparent 28rem),
+                    radial-gradient(circle at 90% 82%, rgba(250, 204, 21, 0.17), transparent 26rem),
+                    linear-gradient(135deg, var(--navy), #1d4ed8);
+            color: white;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: min(1180px, 100%);
+            margin: 0 auto;
+            padding: 24px 32px;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .logo span {
+            color: var(--yellow);
+        }
+
+        .user-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-welcome {
+            font-size: 0.95rem;
+            color: var(--sky);
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            padding: 0.6rem 1.1rem;
+            border-radius: 999px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            font-weight: 700;
+            font-size: 0.88rem;
+            text-decoration: none;
+            transition: all 180ms ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.35);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        main {
+            width: min(1180px, 100%);
+            margin: 0 auto;
+            padding: 20px 32px 60px;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+            animation: enter 600ms ease-out both;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.4rem;
+        }
+
+        .dashboard-header h1 span {
+            color: var(--yellow);
+        }
+
+        .dashboard-header p {
+            color: var(--sky);
+            font-size: 1rem;
+        }
+
+        .alert-danger {
+            padding: 0.85rem 1.25rem;
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+        }
+
+        .alert-warning {
+            padding: 1rem 1.25rem;
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fde68a;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .candidates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            animation: enter 600ms ease-out 100ms both;
+        }
+
+        .candidate-card {
+            position: relative;
+            padding: 1.75rem;
+            border: 1px solid rgba(219, 234, 254, 0.18);
+            border-radius: 1.25rem;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: all 200ms ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(250, 204, 21, 0.4);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .candidate-card.selected {
+            border-color: var(--yellow);
+            background: rgba(250, 204, 21, 0.1);
+            box-shadow: 0 0 0 2px var(--yellow), 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .candidate-symbol {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: rgba(11, 21, 52, 0.8);
+            border: 1px solid rgba(219, 234, 254, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--yellow);
+        }
+
+        .radio-custom {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid rgba(219, 234, 254, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 180ms ease;
+        }
+
+        .candidate-card.selected .radio-custom {
+            border-color: var(--yellow);
+            background: var(--yellow);
+        }
+
+        .candidate-card.selected .radio-custom::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #111827;
+        }
+
+        .candidate-name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .party-name {
+            color: var(--yellow);
+            font-size: 0.92rem;
+            font-weight: 700;
+            margin-bottom: 0.85rem;
+        }
+
+        .candidate-manifesto {
+            color: var(--sky);
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin-bottom: 1.25rem;
+            flex-grow: 1;
+        }
+
+        .hidden-radio {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .vote-action-bar {
+            position: sticky;
+            bottom: 20px;
+            padding: 1.25rem 2rem;
+            border: 1px solid rgba(219, 234, 254, 0.2);
+            border-radius: 1.25rem;
+            background: rgba(11, 21, 52, 0.85);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: enter 600ms ease-out 200ms both;
+        }
+
+        .action-info {
+            font-size: 0.95rem;
+            color: var(--sky);
+        }
+
+        .action-info span {
+            color: white;
+            font-weight: 700;
+        }
+
+        .btn-cast-vote {
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 0.75rem;
+            background: var(--yellow);
+            color: #111827;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(250, 204, 21, 0.25);
+            transition: all 180ms ease;
+        }
+
+        .btn-cast-vote:hover:not(:disabled) {
+            background: #fde047;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(250, 204, 21, 0.35);
+        }
+
+        .btn-cast-vote:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        @keyframes enter {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 700px) {
+            nav { padding: 20px; }
+            main { padding: 16px 16px 40px; }
+            .candidates-grid { grid-template-columns: 1fr; }
+            .vote-action-bar { flex-direction: column; gap: 1rem; text-align: center; }
+            .btn-cast-vote { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">
+        <a th:href="@{/}" style="color: inherit; text-decoration: none;">Vote<span>Online</span></a>
+    </div>
+    <div class="user-nav">
+        <span class="user-welcome" th:text="${user != null ? 'Welcome, ' + user.fullName : 'Welcome, Voter'}">Welcome, Voter</span>
+        <a th:href="@{/logout}" class="logout-btn">Logout</a>
+    </div>
+</nav>
+
+<main>
+    <div class="dashboard-header">
+        <h1>Official <span>Ballot Paper</span></h1>
+        <p>Select your preferred candidate and submit your vote securely.</p>
+    </div>
+
+    <div th:if="${error}" class="alert-danger" th:text="${error}"></div>
+
+    <div th:if="${hasVoted}" class="alert-warning">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <span>You have already cast your vote in this election. Multiple voting is strictly prohibited.</span>
+    </div>
+
+    <form id="voteForm" th:action="@{/vote}" method="post">
+        <div class="candidates-grid">
+            <!-- Dynamic thymeleaf iteration over candidates -->
+            <div th:each="candidate : ${candidates}"
+                 class="candidate-card"
+                 th:classappend="${hasVoted} ? 'disabled' : ''"
+                 onclick="selectCandidate(this)">
+
+                <input type="radio"
+                       name="candidateId"
+                       th:value="${candidate.id}"
+                       class="hidden-radio"
+                       th:disabled="${hasVoted}" required>
+
+                <div class="card-header">
+                    <div class="candidate-symbol" th:text="${candidate.symbol}">★</div>
+                    <div class="radio-custom"></div>
+                </div>
+
+                <div class="candidate-name" th:text="${candidate.name}">Candidate Name</div>
+                <div class="party-name" th:text="${candidate.partyName}">Political Party</div>
+                <div class="candidate-manifesto" th:text="${candidate.manifesto}">Candidate manifesto and promises for the term.</div>
+            </div>
+        </div>
+
+        <div class="vote-action-bar" th:if="${!hasVoted}">
+            <div class="action-info">
+                Selected Candidate: <span id="selectedCandidateText">None</span>
+            </div>
+            <button type="submit" id="submitBtn" class="btn-cast-vote" disabled>Confirm & Cast Vote</button>
+        </div>
+    </form>
+</main>
+
+<script>
+    function selectCandidate(card) {
+        if (card.classList.contains('disabled')) return;
+
+        // Remove selected status from all cards
+        document.querySelectorAll('.candidate-card').forEach(c => c.classList.remove('selected'));
+
+        // Add selected to clicked card
+        card.classList.add('selected');
+
+        // Check the radio input inside
+        const radio = card.querySelector('.hidden-radio');
+        radio.checked = true;
+
+        // Update action bar
+        const candidateName = card.querySelector('.candidate-name').innerText;
+        const partyName = card.querySelector('.party-name').innerText;
+        document.getElementById('selectedCandidateText').innerText = candidateName + ' (' + partyName + ')';
+
+        // Enable submit button
+        document.getElementById('submitBtn').disabled = false;
+    }
+</script>
+
+</body>
+</html>

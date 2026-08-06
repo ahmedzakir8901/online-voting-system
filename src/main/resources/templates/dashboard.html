@@ -138,6 +138,12 @@
             color: var(--yellow);
         }
 
+        .alert-error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+        }
+
         /* Candidate Cards Grid */
         .candidates-grid {
             display: grid;
@@ -164,10 +170,20 @@
             transform: translateY(-6px);
         }
 
+        .candidate-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .candidate-info h2 {
             font-size: 1.5rem;
             font-weight: 800;
             margin-bottom: 0.25rem;
+        }
+
+        .candidate-symbol {
+            font-size: 1.75rem;
         }
 
         .candidate-party {
@@ -236,7 +252,7 @@
         <a th:href="@{/dashboard}" style="color: inherit; text-decoration: none;">Vote<span>Online</span></a>
     </div>
     <div class="nav-right">
-        <div class="user-badge">Logged in as: <span th:text="${username}">Voter</span></div>
+        <div class="user-badge">Logged in as: <span th:text="${user != null ? user.fullName : 'Voter'}">Alex Morgan</span></div>
         <a th:href="@{/logout}" class="logout-btn">Logout</a>
     </div>
 </nav>
@@ -248,8 +264,11 @@
     </section>
 
     <!-- Feedback Banner Messages -->
-    <div th:if="${votedSuccessfully}" class="alert alert-success">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}">
         Your vote has been cast and securely recorded. Thank you for participating!
+    </div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}">
+        An error occurred.
     </div>
     <div th:if="${hasVoted}" class="alert alert-info">
         You have already submitted your vote for this election period.
@@ -258,13 +277,23 @@
     <!-- Candidate Cards Container -->
     <div class="candidates-grid">
 
-        <!-- Example Static Candidate Card (Loopable via th:each) -->
+        <!-- Candidate Card Loop -->
         <div class="candidate-card" th:each="candidate : ${candidates}">
             <div class="candidate-info">
-                <h2 th:text="${candidate.name}">Alex Morgan</h2>
-                <span class="candidate-party" th:text="${candidate.party}">Progressive Future Party</span>
-                <p class="candidate-description" th:text="${candidate.description}">
-                    Focusing on sustainable community development, technology infrastructure improvements, and transparent local governance.
+                <div class="candidate-header-row">
+                    <h2 th:text="${candidate.name}">Alex Morgan</h2>
+                    <span class="candidate-symbol" th:text="${candidate.symbol}">★</span>
+                </div>
+
+                <!-- SAFE PARTY RENDERING (Checks both partyName and party keys) -->
+                <span class="candidate-party"
+                      th:text="${candidate.partyName != null ? candidate.partyName : (candidate.party != null ? candidate.party : 'INDEPENDENT')}">
+                    Party Name
+                </span>
+
+                <p class="candidate-description"
+                   th:text="${candidate.manifesto != null ? candidate.manifesto : candidate.description}">
+                    Focusing on sustainable community development and transparent governance.
                 </p>
             </div>
 

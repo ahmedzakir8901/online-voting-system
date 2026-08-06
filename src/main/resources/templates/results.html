@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Results - Online Voting System</title>
+
+    <style>
+        :root {
+            --navy: #0b1534;
+            --yellow: #facc15;
+            --sky: #dbeafe;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background:
+                    radial-gradient(circle at 12% 15%, rgba(96, 165, 250, 0.42), transparent 28rem),
+                    radial-gradient(circle at 90% 82%, rgba(250, 204, 21, 0.17), transparent 26rem),
+                    linear-gradient(135deg, var(--navy), #1d4ed8);
+            color: white;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: min(1180px, 100%);
+            margin: 0 auto;
+            padding: 24px 32px;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .logo span {
+            color: var(--yellow);
+        }
+
+        .user-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dashboard-link {
+            padding: 0.6rem 1.1rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(219, 234, 254, 0.2);
+            color: white;
+            font-weight: 700;
+            font-size: 0.88rem;
+            text-decoration: none;
+            transition: all 180ms ease;
+        }
+
+        .dashboard-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        main {
+            width: min(1180px, 100%);
+            margin: 0 auto;
+            padding: 20px 32px 60px;
+        }
+
+        .results-header {
+            margin-bottom: 2rem;
+            animation: enter 600ms ease-out both;
+        }
+
+        .results-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.4rem;
+        }
+
+        .results-header h1 span {
+            color: var(--yellow);
+        }
+
+        .results-header p {
+            color: var(--sky);
+            font-size: 1rem;
+        }
+
+        /* Stats Overview Row */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+            animation: enter 600ms ease-out 100ms both;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            border: 1px solid rgba(219, 234, 254, 0.18);
+            border-radius: 1.25rem;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-title {
+            color: var(--sky);
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .stat-value span {
+            color: var(--yellow);
+        }
+
+        /* Leaderboard Section */
+        .results-card {
+            padding: 2.25rem 2rem;
+            border: 1px solid rgba(219, 234, 254, 0.18);
+            border-radius: 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            animation: enter 600ms ease-out 200ms both;
+        }
+
+        .results-card h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .results-card h2 span {
+            color: var(--yellow);
+        }
+
+        .candidate-result-item {
+            margin-bottom: 1.75rem;
+        }
+
+        .candidate-result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .symbol-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(11, 21, 52, 0.8);
+            border: 1px solid rgba(219, 234, 254, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--yellow);
+        }
+
+        .candidate-details .name {
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .candidate-details .party {
+            font-size: 0.85rem;
+            color: var(--sky);
+        }
+
+        .result-numbers {
+            text-align: right;
+        }
+
+        .vote-count {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .vote-percentage {
+            font-size: 0.85rem;
+            color: var(--yellow);
+            font-weight: 700;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: rgba(11, 21, 52, 0.6);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(219, 234, 254, 0.15);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #facc15, #fde047);
+            border-radius: 999px;
+            transition: width 1s ease-out;
+        }
+
+        .winner-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 999px;
+            background: rgba(250, 204, 21, 0.2);
+            border: 1px solid rgba(250, 204, 21, 0.5);
+            color: var(--yellow);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes enter {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 700px) {
+            nav { padding: 20px; }
+            main { padding: 16px 16px 40px; }
+            .results-card { padding: 1.5rem 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">
+        <a th:href="@{/}" style="color: inherit; text-decoration: none;">Vote<span>Online</span></a>
+    </div>
+    <div class="user-nav">
+        <a th:href="@{/dashboard}" class="dashboard-link">Back to Dashboard</a>
+    </div>
+</nav>
+
+<main>
+    <div class="results-header">
+        <h1>Live Election <span>Results</span></h1>
+        <p>Real-time vote tallies and candidate standing for the current election session.</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-title">Total Votes Cast</div>
+            <div class="stat-value" th:text="${totalVotes != null ? totalVotes : '0'}">1,245</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Total Candidates</div>
+            <div class="stat-value" th:text="${totalCandidates != null ? totalCandidates : '0'}">4</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Current Leading Party</div>
+            <div class="stat-value"><span th:text="${leadingParty != null ? leadingParty : 'N/A'}">PTI</span></div>
+        </div>
+    </div>
+
+    <!-- Results Breakdown -->
+    <div class="results-card">
+        <h2>Candidate <span>Standings</span></h2>
+
+        <!-- Loop over results sorted by vote count -->
+        <div th:each="item, iterStat : ${results}" class="candidate-result-item">
+            <div class="result-meta">
+                <div class="result-info">
+                    <div class="symbol-badge" th:text="${item.candidate.symbol}">★</div>
+                    <div class="candidate-details">
+                        <div class="name">
+                            <span th:text="${item.candidate.name}">Candidate Name</span>
+                            <span th:if="${iterStat.first}" class="winner-badge">★ Leading</span>
+                        </div>
+                        <div class="party" th:text="${item.candidate.partyName}">Political Party</div>
+                    </div>
+                </div>
+
+                <div class="result-numbers">
+                    <div class="vote-count" th:text="${item.voteCount + ' Votes'}">450 Votes</div>
+                    <div class="vote-percentage" th:text="${#numbers.formatDecimal(item.percentage, 1, 1) + '%'}">45.0%</div>
+                </div>
+            </div>
+
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" th:style="'width: ' + ${item.percentage} + '%;'"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

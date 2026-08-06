@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Online Voting System</title>
+
+    <style>
+        :root {
+            --navy: #0b1534;
+            --yellow: #facc15;
+            --sky: #dbeafe;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background:
+                    radial-gradient(circle at 12% 15%, rgba(96, 165, 250, 0.42), transparent 28rem),
+                    radial-gradient(circle at 90% 82%, rgba(250, 204, 21, 0.17), transparent 26rem),
+                    linear-gradient(135deg, var(--navy), #1d4ed8);
+            color: white;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: min(1180px, 100%);
+            margin: 0 auto;
+            padding: 24px 32px;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .logo span {
+            color: var(--yellow);
+        }
+
+        .admin-badge {
+            background: rgba(250, 204, 21, 0.2);
+            border: 1px solid rgba(250, 204, 21, 0.5);
+            color: var(--yellow);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-left: 0.5rem;
+        }
+
+        .user-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            padding: 0.6rem 1.1rem;
+            border-radius: 999px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            font-weight: 700;
+            font-size: 0.88rem;
+            text-decoration: none;
+            transition: all 180ms ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.35);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        main {
+            width: min(1180px, 100%);
+            margin: 0 auto;
+            padding: 20px 32px 60px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+            animation: enter 600ms ease-out both;
+        }
+
+        .admin-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.4rem;
+        }
+
+        .admin-header h1 span {
+            color: var(--yellow);
+        }
+
+        .admin-header p {
+            color: var(--sky);
+            font-size: 1rem;
+        }
+
+        .btn-add {
+            padding: 0.75rem 1.4rem;
+            border-radius: 0.75rem;
+            background: var(--yellow);
+            color: #111827;
+            font-weight: 800;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(250, 204, 21, 0.25);
+            transition: all 180ms ease;
+        }
+
+        .btn-add:hover {
+            background: #fde047;
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px rgba(250, 204, 21, 0.35);
+        }
+
+        /* Metric Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+            animation: enter 600ms ease-out 100ms both;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            border: 1px solid rgba(219, 234, 254, 0.18);
+            border-radius: 1.25rem;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-title {
+            color: var(--sky);
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        /* Glassmorphism Table Card */
+        .table-card {
+            padding: 1.75rem 2rem;
+            border: 1px solid rgba(219, 234, 254, 0.18);
+            border-radius: 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            animation: enter 600ms ease-out 200ms both;
+            overflow-x: auto;
+        }
+
+        .table-card h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .table-card h2 span {
+            color: var(--yellow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 0.9rem 1rem;
+            color: var(--sky);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(219, 234, 254, 0.2);
+        }
+
+        td {
+            padding: 1.1rem 1rem;
+            border-bottom: 1px solid rgba(219, 234, 254, 0.1);
+            font-size: 0.95rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .candidate-symbol {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(11, 21, 52, 0.8);
+            border: 1px solid rgba(219, 234, 254, 0.3);
+            color: var(--yellow);
+            font-weight: 800;
+        }
+
+        .btn-delete {
+            padding: 0.45rem 0.85rem;
+            border-radius: 0.5rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 180ms ease;
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.4);
+            color: white;
+        }
+
+        /* Modal Overlay */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 21, 52, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-card {
+            width: min(100%, 500px);
+            padding: 2.25rem 2rem;
+            border: 1px solid rgba(219, 234, 254, 0.25);
+            border-radius: 1.25rem;
+            background: rgba(11, 21, 52, 0.95);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .modal-card h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-card h3 span {
+            color: var(--yellow);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--sky);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 0.6rem;
+            border: 1px solid rgba(219, 234, 254, 0.25);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-cancel {
+            padding: 0.8rem 1.25rem;
+            border-radius: 0.6rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(219, 234, 254, 0.2);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.6rem;
+            background: var(--yellow);
+            border: none;
+            color: #111827;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        @keyframes enter {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 700px) {
+            nav { padding: 20px; }
+            main { padding: 16px 16px 40px; }
+            .admin-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .btn-add { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">
+        <a th:href="@{/}" style="color: inherit; text-decoration: none;">Vote<span>Online</span></a>
+        <span class="admin-badge">Admin Panel</span>
+    </div>
+    <div class="user-nav">
+        <a th:href="@{/logout}" class="logout-btn">Logout</a>
+    </div>
+</nav>
+
+<main>
+    <div class="admin-header">
+        <div>
+            <h1>Control <span>Center</span></h1>
+            <p>Manage election candidates, monitor vote logs, and configure platform settings.</p>
+        </div>
+        <button class="btn-add" onclick="openModal()">+ Add New Candidate</button>
+    </div>
+
+    <!-- Overview Metrics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-title">Registered Voters</div>
+            <div class="stat-value" th:text="${totalVoters != null ? totalVoters : '0'}">1,890</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Total Votes Recorded</div>
+            <div class="stat-value" th:text="${totalVotes != null ? totalVotes : '0'}">1,245</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Voter Turnout</div>
+            <div class="stat-value" th:text="${turnoutPercentage != null ? turnoutPercentage + '%' : '65.8%'}">65.8%</div>
+        </div>
+    </div>
+
+    <!-- Candidate Management Table -->
+    <div class="table-card">
+        <h2>Active <span>Candidates</span></h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Candidate Name</th>
+                <th>Party</th>
+                <th>Votes Tally</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="candidate : ${candidates}">
+                <td>
+                    <div class="candidate-symbol" th:text="${candidate.symbol}">★</div>
+                </td>
+                <td th:text="${candidate.name}" style="font-weight: 700;">John Smith</td>
+                <td th:text="${candidate.partyName}" style="color: var(--yellow);">Justice Party</td>
+                <td th:text="${candidate.voteCount}">450</td>
+                <td>
+                    <form th:action="@{'/admin/candidate/delete/' + ${candidate.id}}" method="post" style="display:inline;">
+                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to remove this candidate?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- Add Candidate Modal -->
+<div class="modal" id="candidateModal">
+    <div class="modal-card">
+        <h3>Add New <span>Candidate</span></h3>
+        <form th:action="@{/admin/candidate/add}" method="post">
+            <div class="form-group">
+                <label for="name">Candidate Full Name</label>
+                <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Sarah Jenkins" required>
+            </div>
+            <div class="form-group">
+                <label for="partyName">Party Name</label>
+                <input type="text" id="partyName" name="partyName" class="form-control" placeholder="e.g. Alliance Party" required>
+            </div>
+            <div class="form-group">
+                <label for="symbol">Election Symbol (Emoji / Icon)</label>
+                <input type="text" id="symbol" name="symbol" class="form-control" placeholder="e.g. ★ or 🦁" required>
+            </div>
+            <div class="form-group">
+                <label for="manifesto">Brief Manifesto</label>
+                <textarea id="manifesto" name="manifesto" class="form-control" rows="3" placeholder="Key campaign promises..." required></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn-submit">Save Candidate</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openModal() {
+        document.getElementById('candidateModal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('candidateModal').classList.remove('active');
+    }
+</script>
+
+</body>
+</html>

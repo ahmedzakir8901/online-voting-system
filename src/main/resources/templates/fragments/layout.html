@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Shared Header Fragment -->
+<nav th:fragment="navbar(activePage)">
+    <div class="logo">
+        <a th:href="@{/dashboard}" style="color: inherit; text-decoration: none;">Vote<span>Online</span></a>
+    </div>
+    <div class="user-nav">
+        <a th:href="@{/dashboard}" th:classappend="${activePage == 'dashboard'} ? 'active' : ''">Dashboard</a>
+        <a th:href="@{/results}" th:classappend="${activePage == 'results'} ? 'active' : ''">Results</a>
+        <a th:href="@{/admin}" th:classappend="${activePage == 'admin'} ? 'active' : ''" class="admin-badge">Admin</a>
+        <a th:href="@{/login?logout=true}" class="logout-btn">Logout</a>
+    </div>
+</nav>
+
+</body>
+</html>
